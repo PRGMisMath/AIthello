@@ -11,7 +11,7 @@
 #include "../utils/Random.hpp"
 #include "../nl/NLNetwork.h"
 #include "../nl/NLBackprop.h"
-#include "OthelloTrain.h"
+#include "../train/OthelloTrain.hpp"
 #include "../graphics/OthelloUI.hpp"
 #include "../train/NLTrainManager.hpp"
 #include "../utils/StringView.hpp"
@@ -27,13 +27,7 @@ NLFormat format[sformat] = {
 
 NLTrainManager train_manager{ format, sformat };
 
-float aiheur(const MiniOthello& game) {
-    auto nn = train_manager.nn;
-    V1boardToData(game, nn.p_process1);
-    float res;
-    eval_network(&nn, nn.p_process1, &res);
-    return 2 * res - 1;
-}
+
 
 
 class ChangeIndex : public Command {
@@ -43,7 +37,7 @@ public:
     const char* name() const override { return "setpid"; }
     virtual const char* description() const override { return "Change la partie consid�r�."; }
     virtual void execute(TerminalState& state) {
-        index = nb.value;
+        wth_index = nb.value;
     }
 
 protected:
@@ -57,48 +51,70 @@ protected:
 
 
 
-class EvolvedAI : public TreeAI {
+class EvolvedMinMaxAI : public MinMaxAI {
 public:
-    EvolvedAI(size_t depth = 3, EvalHeur heval = scorediff) :
-        TreeAI(&m_wlk, heval), depth(depth), m_wlk(m_tree), turn(0)
+    EvolvedMinMaxAI(size_t depth = 3, EvalHeur heval = scorediff) :
+        MinMaxAI(depth, heval)
     {
+        name = "EvolvedMinMaxAI" + std::to_string(depth);
     }
-    ~EvolvedAI() = default;
+    ~EvolvedMinMaxAI() = default;
 
     void reset() override
     {
-        m_tree.reset();
-        turn = 0;
-        m_wlk = MinMaxWalker(m_tree);
+        MinMaxAI::reset();
     }
 
 protected:
     void treeEvoluate() override
     {
-        ++++turn;
-        if (turn <= 5) {
+        if (m_wlk.getRoot()->savestate.getTurn() <= 5) {
             m_wlk.alphabeta(noheur, 1);
         }
-        else if (turn >= 49) {
-            m_wlk.alphabeta(scorediff, 11);
+        else if (m_wlk.getRoot()->savestate.getTurn() >= 49) {
+            m_wlk.alphabeta(scorediff, 12);
         }
         else {
-            m_wlk.alphabeta(heval, depth);
+            MinMaxAI::treeEvoluate();
         }
     }
 
+};
+class EvolvedPreferAI : public PreferAI {
+public:
+    EvolvedPreferAI(size_t length = 50, float temp = 100, EvalHeur heval = scorediff) :
+        PreferAI(length, temp, heval)
+    {
+        name = "EvolvedPreferAI" + std::to_string(length);
+    }
+    ~EvolvedPreferAI() = default;
+
+    void reset() override
+    {
+        PreferAI::reset();
+    }
+
 protected:
-    MinMaxWalker m_wlk;
-    size_t depth;
-    int turn;
+    void treeEvoluate() override
+    {
+        if (m_wlk.getRoot()->savestate.getTurn() <= 5) {
+            m_wlk.preferSearch(noheur, 10);
+        }
+        else if (m_wlk.getRoot()->savestate.getTurn() >= 49) {
+            m_wlk.getRoot()->alphabeta(scorediff, 12);
+        }
+        else {
+            PreferAI::treeEvoluate();
+        }
+    }
 
 };
 
 
 int main() {
 
-    texPion.loadFromFile("ressource\\pion.png");
-    gFont.openFromFile("ressource\\arial.ttf");
+    texPion.loadFromFile("../ressource/pion.png");
+    gFont.openFromFile("../ressource/arial.ttf");
     wthfr.readFile();
 
     sf::RenderWindow wndw(sf::VideoMode({ 800u, 600u }), "Othello Game");
@@ -106,14 +122,14 @@ int main() {
     GameView gameView{ GAOthello, gameLogic.getBoard(), 50 }; // Assume GameView is already implemented
     GameBoardManager gbman{ &gameLogic, new HumanPlayer(), new HumanPlayer() };
     OthelloUI othelloUI(wndw, gameView, gbman, gameLogic);
-    othelloUI.ai1 = new EvolvedAI(7, sigscorediff);
-    othelloUI.ai2 = new EvolvedAI(7, sigscorediff);
+    othelloUI.ai1 = new EvolvedMinMaxAI(7, sigscorediff);
+    othelloUI.ai2 = new EvolvedPreferAI(10000, 2, scorediff);
 
 
 
     // AI //
-    train_manager.loadData(R"(C:\Users\theop\source\repos\GameBoard\GameBoard\data\MasterDatas100000.bin)", 100'000, 90'000);
-    train_manager.save_folder = R"(C:\Users\theop\source\repos\GameBoard\GameBoard\data\save\)";
+    train_manager.loadData(R"(..\data\MasterDatas100000.bin)", 100'000, 90'000);
+    train_manager.save_folder = R"(..\data\save\)";
     
 
     Terminal term{};
@@ -124,7 +140,7 @@ int main() {
     term.addCommand(new TestNNCommand(train_manager));
     term.addCommand(new BackPropNNCommand(train_manager));
     StringView sv{};
-    term.addCommand(new PlayCMD(sv));
+    term.addCommand(new PlayCMD(sv, wthfr));
     std::thread th{ [term]() mutable { term.run(); } };
 
     //    //
@@ -141,7 +157,7 @@ int main() {
 
         // --- Gestion des tours de jeux --- //
         if (!gbman.isFinish() && !gbman.waiting()) { // Si la partie n'est pas fini et si le choix du coup a ete effectue
-            if (gbman.playTurn()) { // Si le coup est valide
+            if (valid(gbman.playTurn())) { // Si le coup est valide
                 othelloUI.updateCanvas();
             }
         }

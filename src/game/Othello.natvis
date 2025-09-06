@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+  <Type Name="Othello">
+    <DisplayString>{{turn={getTurn()}}}</DisplayString>
+  </Type>
+  <Type Name="TreeNode::StateEval">
+    <DisplayString>{minMax}</DisplayString>
+  </Type>
+  <Type Name="Pos">
+    <DisplayString>{(x_p8y / BOARD_SIZE)+65,c}{x_p8y % BOARD_SIZE + 1}</DisplayString>
+  </Type>
+  <Type Name="TreeNode::Rope">
+    <DisplayString>{pos} => {eval,g} [{child->heur,g}] ({child->p_genChild})</DisplayString>
+    <Expand>
+      <ArrayItems>
+        <Size>child->ropes._Mypair._Myval2._Mylast - child->ropes._Mypair._Myval2._Myfirst</Size>
+        <ValuePointer>child->ropes._Mypair._Myval2._Myfirst</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+  <Type Name="V1DataSet">
+    <DisplayString>{{size = {sset}}}</DisplayString>
+    <Expand>
+      <ArrayItems>
+        <Size>sset</Size>
+        <ValuePointer>set</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+  <Type Name="NLTrainData">
+    <DisplayString>{{res = {*result}}}</DisplayString>
+    <Expand>
+      <Item Name="res">*result</Item>
+      <Item Name="entry">
+        entry,129
+      </Item>
+    </Expand>
+  </Type>
+</AutoVisualizer>

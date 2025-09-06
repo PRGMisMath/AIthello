@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+  
+  <Type Name="NLNetwork">
+    <DisplayString>{{ nb_layer={num_layers} }}</DisplayString>
+    <Expand>
+      <Item Name="[nb_layer]" ExcludeView="simple">num_layers</Item>
+      <Item Name="[max_dim]" ExcludeView="simple">max_dim</Item>
+      <ArrayItems>
+        <Size>num_layers</Size>
+        <ValuePointer>layers</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+
+  <Type Name="NLFoncComb">
+    <DisplayString>{{ n={n}, p={p} }}</DisplayString>
+    <Expand>
+      <Item Name="n" ExcludeView="simple">n</Item>
+      <Item Name="p" ExcludeView="simple">p</Item>
+      <ArrayItems>
+        <Direction>Forward</Direction>
+        <Rank>2</Rank>
+        <Size>($i == 0) ? n : p</Size>
+        <ValuePointer>matrix</ValuePointer>
+      </ArrayItems>
+      <ArrayItems>
+        <Direction>Forward</Direction>
+        <Rank>1</Rank>
+        <Size>n</Size>
+        <ValuePointer>bias</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+  
+</AutoVisualizer>

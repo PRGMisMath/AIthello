@@ -6,7 +6,7 @@
 #include<SFML/Graphics.hpp>
 
 #include "../game/Othello.hpp"
-#include "../GameView.hpp"
+#include "GameView.hpp"
 #include "GamePlayer.hpp"
 #include "../game/GameBoardManager.hpp"
 #include "MinMaxTree.hpp"
@@ -14,8 +14,8 @@
 
 
 
-static WTHFileReader wthfr{ "data\\games\\WTH_FUSION.wtb" };
-inline int index = 0;
+static WTHFileReader wthfr{ "../data/games/WTH_FUSION.wtb" };
+inline int wth_index = 0;
 
 static sf::Texture texPion{};
 static sf::Font gFont{};
@@ -76,7 +76,7 @@ private:
 
 OthelloUI::OthelloUI(sf::RenderWindow& window, GameView& gameView, GameBoardManager& gbman, OthelloSave& gameLogic)
     : window(window), gui(window), gameView(gameView), gbMan(gbman), gameLogic(gameLogic),
-    rd(wthfr.getGames()[index].gameSave), h1(), h2(), ai1(), ai2()
+    rd(wthfr.getGames()[wth_index].gameSave), h1(), h2(), ai1(), ai2()
 {
     setupUI();
 }
@@ -187,8 +187,8 @@ void OthelloUI::updateUI() {
         scoreB = std::to_string(gameLogic.getScore(PlayerID::Blanc));
     std::string nameN, nameB;
     if (m_mode == "Revue") {
-        nameN = "N*" + std::to_string(wthfr.getGames()[index].blackPlayerNumber);
-        nameB = "N*" + std::to_string(wthfr.getGames()[index].whitePlayerNumber);
+        nameN = "N*" + std::to_string(wthfr.getGames()[wth_index].blackPlayerNumber);
+        nameB = "N*" + std::to_string(wthfr.getGames()[wth_index].whitePlayerNumber);
     }
     else if (m_mode == "2 Joueur") {
         nameN = "Noir";
@@ -237,7 +237,7 @@ void OthelloUI::draw() {
 void OthelloUI::onNewGame() {
     gbMan.reset();
     if (m_mode == "Revue") {
-        rd = GameReader(wthfr.getGames()[index].gameSave);
+        rd = GameReader(wthfr.getGames()[wth_index].gameSave);
     }
 }
 
@@ -249,7 +249,7 @@ void OthelloUI::onModeChange(const tgui::String& strSel) {
     m_mode = strSel;
     if (strSel == "Revue") {
         backColor = tgui::Color(169, 169, 169); // Blue-gray color
-        rd = GameReader(wthfr.getGames()[index].gameSave);
+        rd = GameReader(wthfr.getGames()[wth_index].gameSave);
         gbMan.reset(&rd, &rd);
     }
     else if (strSel == "2 Joueur") {

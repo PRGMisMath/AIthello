@@ -9,15 +9,15 @@
 
 class StringView {
 public:
-    StringView();
+    StringView(AIPlayer* ai1, AIPlayer* ai2);
+    ~StringView();
 
 
 private:
     friend class PlayCMD;
 
     OthelloSave logic;
-    HumanPlayer h1;
-    MinMaxAI ai1;
+    AIPlayer* ai1, *ai2;
 };
 
 class PlayCMD : public Command {

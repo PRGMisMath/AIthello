@@ -2,6 +2,11 @@
 
 #include "Random.hpp"
 
+StringView::~StringView() {
+    delete ai1;
+    delete ai2;
+}
+
 PlayCMD::PlayCMD(StringView& sv, const WTHFileReader& reader) :
 	sv(sv), reader(reader),
     startPos("turn", "Nombre de tour a passer"),
@@ -110,7 +115,7 @@ void PlayCMD::execute(TerminalState& state)
 {
     std::ostream& os = *(state.fluxOut);
 
-    GameBoardManager gbman{ &sv.logic, &sv.h1, &sv.ai1 };
+    GameBoardManager gbman{ &sv.logic, sv.ai1, sv.ai2 };
     gbman.reset();
     GameTree tree{};
     MinMaxWalker wlk{tree};
@@ -178,7 +183,7 @@ void PlayCMD::configure(CmdFormat& format)
 {
 }
 
-StringView::StringView() :
-    logic(), h1(), ai1(6)
+StringView::StringView(AIPlayer* ai1, AIPlayer* ai2) :
+    logic(), ai1(ai1), ai2(ai2)
 {
 }

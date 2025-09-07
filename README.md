@@ -4,53 +4,58 @@
 
 ## Overview
 
-This project aims at creating a good AI for the Othello game. 
+This project aims at creating an high-performance AI for the Othello game. 
 
-It explores various techniques for creating a good AI 
+For this purpose, it explores various technics
 such as minmax tree research (with optimization) with simple hand made heuristics
 or neuronal network powered heuristics
 but also prefer tree search for variating height research.
 
-This project is still on going and lacks many features such as MonteCarlo tree search.
+My approach to this project is to do everything from scratch without external libraries (excpet for the SFML).
+
+This project is still on going : some features are not finalized (especially the neuronal network powered heuristics) and lacks some features such as MonteCarlo tree search.
 
 ## What is Othello ?
 
-### Principle
+### Rules
 
-This a board game for 2 players where the objective is to have as many pieces of your color as possible. The twist is that your pieces can be flipped (therefore swithcing colors) if your opponent traps it between two of their pieces.
+Othello is a board game for 2 players where the objective is to have as many pieces of your color as possible. The twist is that your pieces can be flipped (therefore swithcing colors) if your opponent traps it between two of its pieces.
 
 You can find all the rules on [Wikipedia](https://en.wikipedia.org/wiki/Reversi). If you are french, I encourage you to check the [FFO website](https://www.ffothello.org/othello/regles-du-jeu/).
 
 ### What interest ?
 
-It is a difficult game as the position can really quickly change. There is no simple way to evaluate a position and there are too many possibilities to explore them all.
+Othello is a complex game as the position can really quickly change. There is no simple way to evaluate a position and there are too many possibilities to explore them all.
 
 This is why this game has interested many programmers which have developped very good AI (for example [Egaroucid](https://github.com/Nyanyan/Egaroucid)).
 
 ## My approch
 
 The AI creation has gone through many steps :
- 1. Creating a minmax tree search algorithm and optimizing it with alphabeta cut.
+ 1. Creating a minmax tree search algorithm and optimizing it with alphabeta cut and MTD(f).
  2. Creating a prefer tree search algorithm (exploring first the branch with the best winning probability).
  3. Testing simple hand made heuristics (score based ones and mobility based ones).
  4. Creating heuristics through machine learning : 
     - Articially augmenting the research by fitting a minimax evaluation.
     - Learning by copying master moves.
 
-This project is mainly me trying to understand in depth AI training and tree search algorithm by testing diverse approches. 
+This project is mainly me exploring how to train an AI and how tree search algorithms work. 
 
 ### Note on Prefer tree search
 
-It is this idea that gave the motivation to start this project : I really wanted to test it !!
+The idea of the Prefer tree search algorthm gave the motivation to start this project : I really wanted to test it !!
 
-The idea fo this tree search algorithm is to follow at each step the most probable path. 
+This tree search algorithm works by following at each step the most probable path. 
 
-For this, you need a probability function (in my case, I'm using softmax based on my heuristics) and then calculate the probability of a branch by multiplying the probability of each ropes alongs the branch. To get the final evaluation, you just use a minmax tree search on the created tree.
+For this, you need a probability function (in my case, I'm using softmax based on my heuristics) and then calculate the probability of a branch by multiplying the probability of each ropes alongs the branch. To get the final evaluation, you just use a minimax tree search on the created tree.
 
-This allows to explore more in depth the most interesting part of the tree while still exploring early branches as the products favores the nodes nearest to the source. 
+This allows me to explore the most interesting part of the tree in greater depth while still exploring early branches as the products favores the nodes nearest to the source. 
+
+Experience shows that this algorithm is less effective than an optimized minmax tree search.
 
 ### Note on AI training
 
+I had trouble generating training data and making my neural networks converge. Therefore, I haven't finalized a satisfactory heuristic through ML yet.
 
 
 ## Testing the project
@@ -58,9 +63,9 @@ This allows to explore more in depth the most interesting part of the tree while
 To build the project, I recommand downloading the all project (keeping the structure)
 and using the CMakeLists.txt file to compile it.
 
-If you want, you can change the variable `IS_GRAPH` to get a graphical interface 
-and `IS_GEN` to generate train data.
-However, I would recommand using the non graphical interface as it is the most polished.
+If you want, you can unset the variable `IS_GRAPH` to disable the graphical interface for easier compilation.
+
+The variable `IS_GEN` allows for data generation.
 
 When launching the project, you will be faced with a terminal like interface.
 

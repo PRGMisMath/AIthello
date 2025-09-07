@@ -102,7 +102,8 @@ int main() {
     WTHFileReader reader = WTHFileReader(R"(../datagames/WTH_FUSION.wtb)");
 
     // AI //
-    train_manager.loadData(R"(data\gen\backlearn\dataS100000.bin)", 100'000, 90'000);
+    // TODO build training data to use the training commands
+    //train_manager.loadData(R"(data\gen\backlearn\dataS100000.bin)", 100'000, 90'000);
     train_manager.save_folder = R"(data\save\)";
     
 

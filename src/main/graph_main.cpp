@@ -122,9 +122,8 @@ int main() {
     GameView gameView{ GAOthello, gameLogic.getBoard(), 50 }; // Assume GameView is already implemented
     GameBoardManager gbman{ &gameLogic, new HumanPlayer(), new HumanPlayer() };
     OthelloUI othelloUI(wndw, gameView, gbman, gameLogic);
-    othelloUI.ai1 = new EvolvedMinMaxAI(7, nbposheur);
-    othelloUI.ai2 = new EvolvedPreferAI(10000, 2, scorediff);
-
+    othelloUI.ai1 = new EvolvedPreferAI(10000, 2, scorediff);
+    othelloUI.ai2 = new EvolvedMinMaxAI(7, nbposheur);
 
 
     // AI //

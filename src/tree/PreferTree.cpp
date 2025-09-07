@@ -90,7 +90,8 @@ void PreferWalker::preferSearch(EvalHeur heval, size_t max_search, float temp)
 		}
 	} while (!prefer_queue.empty() && (count++) < max_search);
 
-	minimaxSearched(curr);
+	curr->alphabeta(noheur, 64, true);
+	//minimaxSearched(curr);
 }
 
 

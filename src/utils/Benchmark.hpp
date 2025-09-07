@@ -19,7 +19,7 @@ public:
     };
 
 private:
-    using Generator = std::function<TreeAI* (GameTree&)>;
+    using Generator = std::function<TreeAI* ()>;
 
     struct BenchTask {
         bool inverse;
@@ -55,8 +55,6 @@ private:
     private:
         TreeAI* m_fight1;
         TreeAI* m_fight2;
-        GameTree m_tree1;
-        GameTree m_tree2;
     };
 
 public:

@@ -15,6 +15,7 @@ public:
 
 	float minimax(EvalHeur heval, size_t rec_depth);
 	float alphabeta(EvalHeur heval, size_t rec_depth);
+	float mtdf(EvalHeur heval, size_t rec_depth);
 
 };
 

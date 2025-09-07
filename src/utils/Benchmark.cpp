@@ -33,8 +33,8 @@ Benchmark::BenchThread & Benchmark::BenchThread::operator=(BenchThread &&other) 
 }
 
 void Benchmark::BenchThread::setFighters(const Generator &genFight1, const Generator &genFight2) {
-    m_fight1 = genFight1(m_tree1);
-    m_fight2 = genFight2(m_tree2);
+    m_fight1 = genFight1();
+    m_fight2 = genFight2();
     m_fight1->wait_time = 0;
     m_fight2->wait_time = 0;
 }

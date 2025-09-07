@@ -24,7 +24,12 @@ float MinMaxWalker::alphabeta(EvalHeur heval, size_t recDepth)
 	return curr->alphabeta(heval, recDepth);
 }
 
-
+float MinMaxWalker::mtdf(EvalHeur heval, size_t rec_depth) {
+	float guess = curr->evalHeur(heval);
+	for (int depth = 1; depth <= rec_depth; depth++)
+		guess = curr->mtdf(heval, depth, guess);
+	return guess;
+}
 
 
 // MinMaxAI //

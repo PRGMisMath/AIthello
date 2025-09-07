@@ -2,6 +2,7 @@
 #include<thread>
 #include<cstdint>
 
+#include "Random.hpp"
 #include "../utils/Benchmark.hpp"
 #include "../game/Othello.hpp"
 #include "../game/GamePlayer.hpp"
@@ -94,9 +95,76 @@ protected:
 
 };
 
+class MDTFWalker : public GameWalker {
+
+};
+
+
 
 int main() {
-    WTHFileReader reader = WTHFileReader(R"(data\games\WTH_FUSION.wtb)");
+    int depth = 6;
+
+    Othello logic{};
+    GameTree tree0;
+    MinMaxWalker min_max_walker{tree0};
+    GameTree tree1;
+    MinMaxWalker alphabeta_walker{tree1};
+    GameTree tree2;
+    MinMaxWalker mtdf_walker{tree2};
+    long long mM_time = 0, ab_time = 0, mtdf_time = 0;
+    std::chrono::time_point<std::chrono::high_resolution_clock> start;
+    std::chrono::time_point<std::chrono::high_resolution_clock> end;
+
+    while (!logic.isFinish()) {
+        // MinMax
+        // start = std::chrono::high_resolution_clock::now();
+        // float mMEval = min_max_walker.minimax(nbposheur, depth);
+        // end = std::chrono::high_resolution_clock::now();
+        // mM_time += std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+        // Pos mMPlay = min_max_walker.getMaxPlay();
+
+        // AlphaBeta
+        start = std::chrono::high_resolution_clock::now();
+        float abEval = alphabeta_walker.alphabeta(nbposheur, depth);
+        end = std::chrono::high_resolution_clock::now();
+        ab_time += std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+        Pos abPlay = alphabeta_walker.getProbaPlay(rd::src.uniform_real(0,1));
+
+        // MTDF
+        start = std::chrono::high_resolution_clock::now();
+        float mtdfEval = mtdf_walker.mtdf(nbposheur, depth);
+        end = std::chrono::high_resolution_clock::now();
+        mtdf_time += std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+        Pos mtdfPlay = mtdf_walker.getMaxPlay();
+
+        std::cout << "\nMinMax : " << abEval << "\nAlphaBeta : " << abEval << "\nMTDF : " << mtdfEval << std::endl;
+        if (abEval != abEval || abEval != mtdfEval) {
+            std::cout << "\tErreur !!!!" << std::endl;
+            return 1;
+        }
+
+        min_max_walker.down(abPlay);
+        alphabeta_walker.down(abPlay);
+        mtdf_walker.down(abPlay);
+        logic.play(abPlay);
+    }
+
+    std::cout << "\nMinMax : " << mM_time << "ms\nAlphaBeta : " << ab_time << "ms\nMTDF : " << mtdf_time << "ms" << std::endl;
+
+    return 0;
+
+    start = std::chrono::high_resolution_clock::now();
+    Benchmark benchmark{
+        [] { return (TreeAI*) new EvolvedMinMaxAI(6, nbposheur); },
+        [] { return (TreeAI*) new EvolvedPreferAI(10000, 2, nbposheur); }
+    };
+    benchmark.runBenchmark(std::cout, 10, nullptr, 0, 10);
+    end = std::chrono::high_resolution_clock::now();
+    long long duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+    std::cout << std::endl << "\nDuration : " << duration << "ms" << std::endl;
+    return 0;
+
+    WTHFileReader reader = WTHFileReader(R"(../datagames/WTH_FUSION.wtb)");
 
     // AI //
     train_manager.loadData(R"(data\gen\backlearn\dataS100000.bin)", 100'000, 90'000);

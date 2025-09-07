@@ -36,8 +36,9 @@ public:
 	TreeNode() = default;
 	~TreeNode();
 
-	float minimax(EvalHeur heval, size_t recDepth);
-	float alphabeta(EvalHeur heval, size_t recDepth, float alpha = -INFINITY, float beta = INFINITY);
+	float minimax(EvalHeur heval, size_t recDepth, bool noGen = false);
+	float alphabeta(EvalHeur heval, size_t recDepth, bool noGen = false, float alpha = -INFINITY, float beta = INFINITY);
+	float mtdf(EvalHeur heval, size_t recDepth, float startHeur, bool noGen = false, float precision = 1.f);
 
 	bool isLeaf() const; // enfant non genere ?
 	bool isEnd() const;  // n'a pas de suite ? (non gen / extremite)
@@ -56,8 +57,11 @@ public:
 
 private:
 	bool p_genChild = false;
-	float heur = NAN;
+	float s_heur = NAN;
 
+	float s_lowerbound = -INFINITY;
+	float s_upperbound = +INFINITY;
+	int s_depth = 0;
 
 };
 

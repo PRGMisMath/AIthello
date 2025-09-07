@@ -128,7 +128,8 @@ int main() {
 
 
     // AI //
-    train_manager.loadData(R"(..\data\MasterDatas100000.bin)", 100'000, 90'000);
+    // TODO : Compile data (to big for github) to use the train command)
+    //train_manager.loadData(R"(..\data\MasterDatas100000.bin)", 100'000, 90'000);
     train_manager.save_folder = R"(..\data\save\)";
     
 

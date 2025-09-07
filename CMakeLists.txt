@@ -74,8 +74,8 @@ set(GRAPH_SOURCES
 
 set(SOURCES ${TRAIN_SOURCES} ${TREE_SOURCES} ${GAME_SOURCES} ${UTILS_SOURCES} ${NL_SOURCES})
 
-set(IS_GRAPH 0)
-set(IS_GEN 1)
+set(IS_GRAPH 1)
+set(IS_GEN 0)
 
 if (${IS_GRAPH})
     set(FULL_SOURCES ${SOURCES} ${GRAPH_SOURCES} src/main/graph_main.cpp)

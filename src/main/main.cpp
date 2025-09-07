@@ -113,7 +113,7 @@ int main() {
     term.addCommand(new InfoNNCommand(train_manager));
     term.addCommand(new TestNNCommand(train_manager));
     term.addCommand(new BackPropNNCommand(train_manager));
-    StringView sv{};
+    StringView sv{ new HumanPlayer(), new EvolvedMinMaxAI(7, nbposheur) };
     term.addCommand(new PlayCMD(sv, reader));
 
     term.run();

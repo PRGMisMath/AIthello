@@ -9,7 +9,7 @@
 
 class StringView {
 public:
-    StringView(AIPlayer* ai1, AIPlayer* ai2);
+    StringView(GamePlayer* ai1, GamePlayer* ai2);
     ~StringView();
 
 
@@ -17,7 +17,7 @@ private:
     friend class PlayCMD;
 
     OthelloSave logic;
-    AIPlayer* ai1, *ai2;
+    GamePlayer* ai1, *ai2;
 };
 
 class PlayCMD : public Command {

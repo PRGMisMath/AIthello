@@ -183,7 +183,7 @@ void PlayCMD::configure(CmdFormat& format)
 {
 }
 
-StringView::StringView(AIPlayer* ai1, AIPlayer* ai2) :
+StringView::StringView(GamePlayer* ai1, GamePlayer* ai2) :
     logic(), ai1(ai1), ai2(ai2)
 {
 }

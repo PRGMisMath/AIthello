@@ -1,5 +1,7 @@
 # AIthello
 
+<img src="AIthello.png">
+
 ## Overview
 
 This project aims at creating a good AI for the Othello game. 
